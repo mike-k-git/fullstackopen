@@ -1,4 +1,9 @@
+import Details from './Details'
+import { useState } from 'react'
+
 const Display = ({ filter, data }) => {
+  const [isShow, setIsShow] = useState(null)
+
   if (!filter) return
 
   if (data.length > 10) {
@@ -9,27 +14,28 @@ const Display = ({ filter, data }) => {
     return (
       <>
         {data.map((country) => (
-          <div key={country.cca2}>{country.name.common}</div>
+          <div key={country.cca2}>
+            {country.name.common}{' '}
+            <button
+              onClick={() => {
+                if (isShow === country.name.common) {
+                  setIsShow(null)
+                } else {
+                  setIsShow(country.name.common)
+                }
+              }}
+            >
+              {isShow === country.name.common ? 'hide' : 'show'}
+            </button>
+            {isShow === country.name.common && <Details country={country} />}
+          </div>
         ))}
       </>
     )
   }
 
   if (data.length === 1) {
-    return (
-      <>
-        <h2>{data[0].name.common}</h2>
-        <div>Capital {data[0].capital[0]}</div>
-        <div>Area {data[0].area}</div>
-        <h4>Languages:</h4>
-        <ul>
-          {Object.keys(data[0].languages).map((lang) => (
-            <li key={lang}>{data[0].languages[lang]}</li>
-          ))}
-        </ul>
-        <img src={data[0].flags.png} alt={`flag of ${data[0].name.common}`} />
-      </>
-    )
+    return <Details country={data[0]} />
   }
 
   return 'No Results'
