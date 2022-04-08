@@ -11,8 +11,10 @@ const Part = ({ part }) => {
 }
 
 const Total = ({ parts }) => {
-  let total = 0
-  parts.forEach((part) => (total += part.exercises))
+  const total = parts.reduce(
+    (previous, current) => previous + current.exercises,
+    0
+  )
   return (
     <p>
       <strong>total of {total} excersices</strong>
