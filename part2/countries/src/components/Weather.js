@@ -11,7 +11,7 @@ const Weather = ({ country }) => {
         `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
       )
       .then((response) => setWeather(response.data))
-  })
+  }, [apiKey, lat, lon])
   return (
     <div>
       <h4>Weather in {country.capital[0]}</h4>
