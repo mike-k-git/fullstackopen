@@ -10,7 +10,17 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    setPersons(persons.concat({ name: newName }))
+
+    const isExist = persons.find(
+      (person) => JSON.stringify(person) === JSON.stringify({ name: newName })
+    )
+
+    if (!isExist) {
+      setPersons(persons.concat({ name: newName }))
+    } else {
+      alert(`${newName} is already added to phonebook`)
+    }
+
     setNewName('')
   }
 
