@@ -4,6 +4,14 @@ import { useState } from 'react'
 const Display = ({ filter, data }) => {
   const [isShow, setIsShow] = useState(null)
 
+  const handleShow = (country) => {
+    if (isShow === country.name.common) {
+      setIsShow(null)
+    } else {
+      setIsShow(country.name.common)
+    }
+  }
+
   if (!filter) return
 
   if (data.length > 10) {
@@ -16,15 +24,7 @@ const Display = ({ filter, data }) => {
         {data.map((country) => (
           <div key={country.cca2}>
             {country.name.common}{' '}
-            <button
-              onClick={() => {
-                if (isShow === country.name.common) {
-                  setIsShow(null)
-                } else {
-                  setIsShow(country.name.common)
-                }
-              }}
-            >
+            <button onClick={() => handleShow(country)}>
               {isShow === country.name.common ? 'hide' : 'show'}
             </button>
             {isShow === country.name.common && <Details country={country} />}
