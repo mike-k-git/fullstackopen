@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
-import Persons from './components/Persons'
+import Person from './components/Person'
 import personService from './services/persons'
 
 const App = () => {
@@ -14,8 +14,8 @@ const App = () => {
     personService.getAll().then((initialPersons) => setPersons(initialPersons))
   }, [])
 
-  const filteredPersons = persons.filter((person) =>
-    person.name.toLowerCase().includes(filter.toLowerCase())
+  const filteredPersons = persons.filter((p) =>
+    p.name.toLowerCase().includes(filter.toLowerCase())
   )
 
   const handleNewNameChange = (event) => {
@@ -33,7 +33,7 @@ const App = () => {
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    const isExist = persons.find((person) => person.name === newName)
+    const isExist = persons.find((p) => p.name === newName)
 
     if (!isExist) {
       const newPerson = { name: newName, number: newNumber }
@@ -46,6 +46,17 @@ const App = () => {
 
     setNewName('')
     setNewNumber('')
+  }
+
+  const handleDeleteOf = (id) => {
+    const removePerson = persons.find((p) => p.id === id)
+    const isConfirmed = window.confirm(`Delete ${removePerson.name}?`)
+
+    if (isConfirmed) {
+      personService
+        .remove(id)
+        .then(() => setPersons(persons.filter((p) => p.id !== id)))
+    }
   }
 
   return (
@@ -61,7 +72,17 @@ const App = () => {
         newNumber={newNumber}
       />
       <h3>Numbers</h3>
-      <Persons filteredPersons={filteredPersons} />
+      <>
+        {filteredPersons.length
+          ? filteredPersons.map((person) => (
+              <Person
+                key={person.id}
+                person={person}
+                handleDelete={() => handleDeleteOf(person.id)}
+              />
+            ))
+          : 'No Results'}
+      </>
     </div>
   )
 }
