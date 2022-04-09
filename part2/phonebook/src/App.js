@@ -33,15 +33,25 @@ const App = () => {
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    const isExist = persons.find((p) => p.name === newName)
+    const updatePerson = persons.find((p) => p.name === newName)
+    const newPerson = { name: newName, number: newNumber }
 
-    if (!isExist) {
-      const newPerson = { name: newName, number: newNumber }
+    if (!updatePerson) {
       personService
         .create(newPerson)
         .then((returnedPerson) => setPersons(persons.concat(returnedPerson)))
     } else {
-      alert(`${newName} is already added to phonebook`)
+      const isConfirmed = window.confirm(
+        `${newName} is already in added to phonebook, replace the old number with a new one?`
+      )
+      if (isConfirmed) {
+        const id = updatePerson.id
+        personService
+          .update(id, newPerson)
+          .then((returnedPerson) =>
+            setPersons(persons.map((p) => (p.id !== id ? p : returnedPerson)))
+          )
+      }
     }
 
     setNewName('')
