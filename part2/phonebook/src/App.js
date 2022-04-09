@@ -41,9 +41,8 @@ const App = () => {
     if (!updatePerson) {
       personService.create(newPerson).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson))
-        setMessage(`Added ${returnedPerson.name}`)
+        showNotification(`Added ${returnedPerson.name}`, 'success')
       })
-      setTimeout(() => setMessage(null), 3000)
     } else {
       const isConfirmed = window.confirm(
         `${newName} is already in added to phonebook, replace the old number with a new one?`
@@ -52,14 +51,18 @@ const App = () => {
         const id = updatePerson.id
         personService.update(id, newPerson).then((returnedPerson) => {
           setPersons(persons.map((p) => (p.id !== id ? p : returnedPerson)))
-          setMessage(`Updated ${returnedPerson.name}`)
+          showNotification(`Updated ${returnedPerson.name}`, 'success')
         })
-        setTimeout(() => setMessage(null), 3000)
       }
     }
 
     setNewName('')
     setNewNumber('')
+  }
+
+  const showNotification = (text, type) => {
+    setMessage({ text, type })
+    setTimeout(() => setMessage(null), 3000)
   }
 
   const handleDeleteOf = (id) => {
@@ -70,6 +73,13 @@ const App = () => {
       personService
         .remove(id)
         .then(() => setPersons(persons.filter((p) => p.id !== id)))
+        .catch((error) => {
+          showNotification(
+            `Error: the person with id '${id}' was already deleted from the server`,
+            'error'
+          )
+        })
+      setPersons(persons.filter((p) => p.id !== id))
     }
   }
 

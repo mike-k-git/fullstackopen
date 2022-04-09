@@ -1,5 +1,4 @@
 .notification {
-  color: #43aa8b;
   background: whitesmoke;
   font-size: xx-large;
   border-style: solid;
@@ -7,4 +6,12 @@
   border-radius: 10px;
   padding: 10px;
   margin-bottom: 10px;
+}
+
+.success {
+  color: #43aa8b;
+}
+
+.error {
+  color: #f94144;
 }
