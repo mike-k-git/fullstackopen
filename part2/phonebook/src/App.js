@@ -54,10 +54,15 @@ const App = () => {
         })
       }
     } else {
-      personService.create(newPerson).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson))
-        showNotification(`Added ${returnedPerson.name}`, 'success')
-      })
+      personService
+        .create(newPerson)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson))
+          showNotification(`Added ${returnedPerson.name}`, 'success')
+        })
+        .catch((error) => {
+          showNotification(error.response.data.error, 'error')
+        })
     }
   }
 
