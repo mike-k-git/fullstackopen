@@ -34,30 +34,31 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
+    setNewName('')
+    setNewNumber('')
 
-    const updatePerson = persons.find((p) => p.name === newName)
     const newPerson = { name: newName, number: newNumber }
+    const isExist = persons.some((p) => p.name === newName)
 
-    if (!updatePerson) {
+    if (isExist) {
+      const ok = window.confirm(
+        `A user with the name '${newName}' already exist. Do you want to change the number to '${newNumber}'?`
+      )
+      if (ok) {
+        const person = persons.find((p) => p.name === newName)
+        personService.update(person.id, newPerson).then((updatedPerson) => {
+          setPersons(
+            persons.map((p) => (p.id !== updatedPerson.id ? p : updatedPerson))
+          )
+          showNotification(`Updated ${updatedPerson.name}`, 'success')
+        })
+      }
+    } else {
       personService.create(newPerson).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson))
         showNotification(`Added ${returnedPerson.name}`, 'success')
       })
-    } else {
-      const isConfirmed = window.confirm(
-        `${newName} is already in added to phonebook, replace the old number with a new one?`
-      )
-      if (isConfirmed) {
-        const id = updatePerson.id
-        personService.update(id, newPerson).then((returnedPerson) => {
-          setPersons(persons.map((p) => (p.id !== id ? p : returnedPerson)))
-          showNotification(`Updated ${returnedPerson.name}`, 'success')
-        })
-      }
     }
-
-    setNewName('')
-    setNewNumber('')
   }
 
   const showNotification = (text, type) => {
